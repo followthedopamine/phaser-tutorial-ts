@@ -1,14 +1,45 @@
 import Phaser from "phaser";
-import logoImg from "./assets/logo.png";
+import sky from "./assets/sky.png";
+import platform from "./assets/platform.png";
+import star from "./assets/star.png";
+import bomb from "./assets/bomb.png";
+import dude from "./assets/dude.png";
 
 class MyGame extends Phaser.Scene {
   constructor() {
     super();
   }
 
-  preload() {}
+  preload() {
+    // Load flat images
+    this.load.image("sky", sky);
+    this.load.image("star", star);
+    this.load.image("platform", platform);
+    this.load.image("bomb", bomb);
+    // Load spritesheets
+    this.load.spritesheet("dude", dude, {
+      frameWidth: 32,
+      frameHeight: 48,
+    });
+  }
 
-  create() {}
+  create() {
+    this.add.image(400, 300, "sky");
+
+    const platforms = this.physics.add.staticGroup();
+    // Create base platform
+    platforms.create(400, 568, "platform").setScale(2).refreshBody();
+    // Create level platforms
+    platforms.create(600, 400, "platform");
+    platforms.create(50, 250, "platform");
+    platforms.create(750, 220, "platform");
+
+    // Set player
+    this.player = this.physics.add.sprite(100, 450, "dude");
+    this.player.setBounce(0.2);
+    this.player.setCollideWorldBounds(true);
+    this.physics.add.collider(this.player, platforms);
+  }
 
   update() {}
 }
