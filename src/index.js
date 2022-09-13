@@ -60,7 +60,23 @@ class MyGame extends Phaser.Scene {
     });
   }
 
-  update() {}
+  update() {
+    const cursors = this.input.keyboard.createCursorKeys();
+    if (cursors.left.isDown) {
+      this.player.setVelocityX(-160);
+      this.player.anims.play("left", true);
+    } else if (cursors.right.isDown) {
+      this.player.setVelocityX(160);
+      this.player.anims.play("right", true);
+    } else {
+      this.player.setVelocityX(0);
+      this.player.anims.play("turn", true);
+    }
+
+    if (cursors.up.isDown && this.player.body.touching.down) {
+      this.player.setVelocityY(-420);
+    }
+  }
 }
 
 const config = {
@@ -72,7 +88,7 @@ const config = {
     default: "arcade",
     arcade: {
       gravity: { y: 450 },
-      debug: true,
+      debug: false,
     },
   },
   scene: MyGame,
