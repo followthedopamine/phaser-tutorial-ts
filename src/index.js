@@ -4,6 +4,7 @@ import platform from "./assets/platform.png";
 import star from "./assets/star.png";
 import bomb from "./assets/bomb.png";
 import dude from "./assets/dude.png";
+import createLevel from "./util/createLevel";
 
 class MyGame extends Phaser.Scene {
   constructor() {
@@ -24,21 +25,18 @@ class MyGame extends Phaser.Scene {
   }
 
   create() {
-    this.add.image(400, 300, "sky");
-
-    const platforms = this.physics.add.staticGroup();
-    // Create base platform
-    platforms.create(400, 568, "platform").setScale(2).refreshBody();
-    // Create level platforms
-    platforms.create(600, 400, "platform");
-    platforms.create(50, 250, "platform");
-    platforms.create(750, 220, "platform");
+    const platformPositions = [
+      [600, 400],
+      [50, 250],
+      [750, 220],
+    ];
+    const level = createLevel(this, platformPositions, "sky");
 
     // Set player
     this.player = this.physics.add.sprite(100, 450, "dude");
     //this.player.setBounce(0.2);
     this.player.setCollideWorldBounds(true);
-    this.physics.add.collider(this.player, platforms);
+    this.physics.add.collider(this.player, level);
 
     // Animation
     this.anims.create({
@@ -69,7 +67,7 @@ class MyGame extends Phaser.Scene {
       child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
     // Stars collision
-    this.physics.add.collider(stars, platforms);
+    this.physics.add.collider(stars, level);
     this.physics.add.overlap(this.player, stars, collect, null, this);
 
     function collect(player, star) {
@@ -95,7 +93,7 @@ class MyGame extends Phaser.Scene {
 
     // Create bombs
     const bombs = this.physics.add.group();
-    this.physics.add.collider(bombs, platforms);
+    this.physics.add.collider(bombs, level);
     this.physics.add.collider(this.player, bombs, bombTouched, null, this);
 
     function bombTouched(player, bomb) {
